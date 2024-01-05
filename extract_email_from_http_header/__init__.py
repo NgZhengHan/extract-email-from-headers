@@ -5,8 +5,12 @@ Utility package to help extract email from HTTP Request headers.
 """
 
 from .streamlit_helper_email_input import streamlit_helper_email_input
+from .extract_email_from_headers import extract_email_from_headers
+from .validate_email import validate_email
 
-__version__ = "0.1.0"
+__version__ = "0.1.3"
 __author__ = 'Ng Zheng Han'
 
 streamlit_helper_email_input = streamlit_helper_email_input
+extract_email_from_headers = extract_email_from_headers
+validate_email = validate_email
