@@ -23,7 +23,10 @@ REMARKS_GIVEN_EMAIL_HEADER_KEY_IS_NONE = "The given email header key to search f
 REMARKS_GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING = "The given email header key to search for is not a string."
 REMARKS_UNABLE_TO_SET_DEFAULT_ON_FAILURE = "Unable to set default email on failure."
 
-def extract_email_from_headers(session_state, header_key = EMAIL_HEADER, session_state_key = SESSION_STATE_KEY, set_email_on_failure = None): 
+def extract_email_from_headers(session_state, 
+                               header_key = EMAIL_HEADER, 
+                               session_state_key = SESSION_STATE_KEY, 
+                               set_email_on_failure = None): 
 
     # Initialize the return values.
     email = EMAIL_UNDEFINED
@@ -73,7 +76,11 @@ def extract_email_from_headers(session_state, header_key = EMAIL_HEADER, session
             email = EMAIL_UNDEFINED
 
     # Additional process if the result is not a success. 
-    if result in {RESULT_UNDEFINED, FAILURE_UNSPECIFIED, NO_EMAIL_HEADER_IN_REQUEST, GIVEN_EMAIL_HEADER_KEY_IS_NONE, GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING}:
+    if result in {RESULT_UNDEFINED, 
+                  FAILURE_UNSPECIFIED, 
+                  NO_EMAIL_HEADER_IN_REQUEST, 
+                  GIVEN_EMAIL_HEADER_KEY_IS_NONE, 
+                  GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING}:
 
         # Result is not a success. 
 
