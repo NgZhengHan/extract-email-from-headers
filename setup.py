@@ -11,7 +11,7 @@ setup(
     author='Ng Zheng Han',
     author_email='ng.zheng.han@gmail.com',
     license='BSD 2-clause',
-    packages=['extract-email-from-http-header'],
+    packages=['extract_email_from_http_header'],
     install_requires=['streamlit',                   
                       ],
 )
