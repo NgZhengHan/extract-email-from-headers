@@ -1,6 +1,6 @@
 from setuptools import setup
 
-with open("VERSION", "r", encoding="utf-8") as version_file:
+with open("extract_email_from_http_header/VERSION", "r", encoding="utf-8") as version_file:
     version = version_file.read().strip()
 
 setup(
