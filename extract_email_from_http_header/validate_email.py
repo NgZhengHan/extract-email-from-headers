@@ -9,12 +9,14 @@ RESULT_UNDEFINED = 0
 SUCCESS = 1
 FAILED_VALIDATION = 2
 EMAIL_DOES_NOT_END_WITH_SPECIFIC_VALUE = 3
+GIVEN_EMAIL_END_WITH_IS_NOT_STRING = 4
 
 # Remarks.
 REMARKS_UNDEFINED = ""
 REMARKS_SUCCESS = "Success."
 REMARKS_FAILED_VALIDATION = "Email failed the validation checks."
 REMARKS_EMAIL_DOES_NOT_END_WITH_SPECIFIED_VALUE = "Email does not end with the specified value."
+REMARKS_GIVEN_EMAIL_END_WITH_IS_NOT_STRING = "The given argument to check if the email ends with a suffix is not an instance of a String. Unable to validate."
 
 # Check if the email is valid. 
 def validate_email(email, ends_with = None):
@@ -58,6 +60,13 @@ def validate_email(email, ends_with = None):
                     # The given email does not end with the specified suffix. 
                     result = EMAIL_DOES_NOT_END_WITH_SPECIFIC_VALUE
                     remarks = REMARKS_EMAIL_DOES_NOT_END_WITH_SPECIFIED_VALUE + " [" + email + "] does not end with [" + ends_with + "]"
+            
+            else:
+
+                # The given arugment for checking if the email ends with a certain suffix is 
+                # itself not an instance of a String. We are unable to use this. 
+                result = GIVEN_EMAIL_END_WITH_IS_NOT_STRING
+                remarks = REMARKS_GIVEN_EMAIL_END_WITH_IS_NOT_STRING
 
     else: 
 
