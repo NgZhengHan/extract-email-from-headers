@@ -1,11 +1,8 @@
 from setuptools import setup
 
-with open("VERSION", "r", encoding="utf-8") as version_file:
-    version = version_file.read().strip()
-
 setup(
     name='extract-email-from-http-header',
-    version = version,    
+    version = "0.1.0",    
     description='Utility package to extract email from HTTP Request header.',
     url='https://github.com/NgZhengHan/extract-email-from-http-header',
     author='Ng Zheng Han',
