@@ -7,12 +7,32 @@ from .validate_email import validate_email as validate_email_method
 from .validate_email import SUCCESS as VALIDATE_SUCCESS
 
 # Constants. 
+EMPTY_STRING = ""
 
 # Helper method to include some additional functions such as 
 # 1. Keep the existing email value if it already exists.
 # 2. Extract email from headers 
 # 3. Validate email
-def streamlit_helper_email_input(session_state, container, label, value = "", max_chars = None, session_state_key = None, type = "default", help = None, autocomplete = None, on_change = None, args =None, kwargs = None, *, header_key = EMAIL_HEADER, placeholder = None, disabled = False, label_visibility = "visible", set_email_on_failure = None, validate_email = True, email_ends_with = None):
+def streamlit_helper_email_input(session_state, 
+                                 container = None, 
+                                 label = EMPTY_STRING, 
+                                 value = EMPTY_STRING, 
+                                 max_chars = None, 
+                                 session_state_key = None, 
+                                 type = "default", 
+                                 help = None, 
+                                 autocomplete = None, 
+                                 on_change = None, 
+                                 args =None, 
+                                 kwargs = None, 
+                                 *, 
+                                 header_key = EMAIL_HEADER, 
+                                 placeholder = None, 
+                                 disabled = False, 
+                                 label_visibility = "visible", 
+                                 set_email_on_failure = None, 
+                                 validate_email = True, 
+                                 email_ends_with = None):
 
     # Check if the session state already has a key for the email. We may already have 
     # some value. This could be due to user manually inputting the email.
@@ -47,7 +67,41 @@ def streamlit_helper_email_input(session_state, container, label, value = "", ma
     #value = session_state.get(key, "")
 
     # Invoke the Streamlit method using the given parameters. 
-    text_input = container.text_input(label = label, value = value, max_chars = max_chars, key = session_state_key, type = type, help = help, autocomplete = autocomplete, on_change = on_change, args = args, kwargs = kwargs, placeholder = placeholder, disabled = disabled, label_visibility = label_visibility)
+    # Remember that a container is optional, so we have to check 
+    # for this. 
+    if container is not None:
 
+        # There is a container.
+        text_input = container.text_input(label = label, 
+                                          value = value, 
+                                          max_chars = max_chars, 
+                                          key = session_state_key, 
+                                          type = type, 
+                                          help = help, 
+                                          autocomplete = autocomplete, 
+                                          on_change = on_change, 
+                                          args = args, 
+                                          kwargs = kwargs, 
+                                          placeholder = placeholder, 
+                                          disabled = disabled, 
+                                          label_visibility = label_visibility)
+
+    else: 
+        
+        # There is no container. 
+        text_input = streamlit.text_input(label = label, 
+                                          value = value, 
+                                          max_chars = max_chars, 
+                                          key = session_state_key, 
+                                          type = type, 
+                                          help = help, 
+                                          autocomplete = autocomplete, 
+                                          on_change = on_change, 
+                                          args = args, 
+                                          kwargs = kwargs, 
+                                          placeholder = placeholder, 
+                                          disabled = disabled, 
+                                          label_visibility = label_visibility)
+        
     # Return the result.
     return text_input
