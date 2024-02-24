@@ -1,8 +1,8 @@
 import typing
 import streamlit
 
-import extract_email_from_headers
-import validate_email
+from . import extract_email_from_headers
+from . import validate_email
 
 # Constants.
 EMPTY_STRING = ""
