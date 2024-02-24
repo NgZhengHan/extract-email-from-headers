@@ -8,5 +8,5 @@ from . import streamlit_helper_email_input
 from . import extract_email_from_headers
 from . import validate_email
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = 'Ng Zheng Han'
