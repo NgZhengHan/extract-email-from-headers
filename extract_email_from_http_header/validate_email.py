@@ -6,10 +6,10 @@ REGULAR_EXPRESSION = r"^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$"
 
 # Result codes.
 RESULT_UNDEFINED = 0
-SUCCESS = 1
-FAILED_VALIDATION = 2
-EMAIL_DOES_NOT_END_WITH_SPECIFIC_VALUE = 3
-GIVEN_EMAIL_END_WITH_IS_NOT_STRING = 4
+RESULT_SUCCESS = 1
+RESULT_FAILED_VALIDATION = 2
+RESULT_EMAIL_DOES_NOT_END_WITH_SPECIFIC_VALUE = 3
+RESULT_GIVEN_EMAIL_END_WITH_IS_NOT_STRING = 4
 
 # Remarks.
 REMARKS_UNDEFINED = ""
@@ -18,8 +18,15 @@ REMARKS_FAILED_VALIDATION = "Email failed the validation checks."
 REMARKS_EMAIL_DOES_NOT_END_WITH_SPECIFIED_VALUE = "Email does not end with the specified value."
 REMARKS_GIVEN_EMAIL_END_WITH_IS_NOT_STRING = "The given argument to check if the email ends with a suffix is not an instance of a String. Unable to validate."
 
+# Output index.
+OUTPUT_INDEX_RESULT = 0
+OUTPUT_INDEX_REMARKS = 1
+
 # Check if the email is valid. 
-def validate_email(email, ends_with = None):
+def validate_email(email : str, ends_with : str = None):
+    """
+    
+    """
 
     # Initialize the return values.
     result = RESULT_UNDEFINED
@@ -36,7 +43,7 @@ def validate_email(email, ends_with = None):
     if bool(match):
 
         # Set the result. 
-        result = SUCCESS
+        result = RESULT_SUCCESS
         remarks = REMARKS_SUCCESS
 
         # The email matches the regular expression.
@@ -52,26 +59,26 @@ def validate_email(email, ends_with = None):
                 if bool(email.endswith(ends_with)):
 
                     # The given email ends with the specified suffix. 
-                    result = SUCCESS 
+                    result = RESULT_SUCCESS 
                     remarks = REMARKS_SUCCESS
 
                 else:
 
                     # The given email does not end with the specified suffix. 
-                    result = EMAIL_DOES_NOT_END_WITH_SPECIFIC_VALUE
+                    result = RESULT_EMAIL_DOES_NOT_END_WITH_SPECIFIC_VALUE
                     remarks = REMARKS_EMAIL_DOES_NOT_END_WITH_SPECIFIED_VALUE + " [" + email + "] does not end with [" + ends_with + "]"
             
             else:
 
                 # The given arugment for checking if the email ends with a certain suffix is 
                 # itself not an instance of a String. We are unable to use this. 
-                result = GIVEN_EMAIL_END_WITH_IS_NOT_STRING
+                result = RESULT_GIVEN_EMAIL_END_WITH_IS_NOT_STRING
                 remarks = REMARKS_GIVEN_EMAIL_END_WITH_IS_NOT_STRING
 
     else: 
 
         # The email does not match the regular expression. 
-        result = FAILED_VALIDATION
+        result = RESULT_FAILED_VALIDATION
         remarks = REMARKS_FAILED_VALIDATION
 
     # Return the result.

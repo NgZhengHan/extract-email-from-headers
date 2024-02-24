@@ -8,11 +8,11 @@ EMAIL_UNDEFINED = "undefined"
 
 # Result codes.
 RESULT_UNDEFINED = 0
-SUCCESS = 1
-FAILURE_UNSPECIFIED = 2
-NO_EMAIL_HEADER_IN_REQUEST = 3
-GIVEN_EMAIL_HEADER_KEY_IS_NONE = 4
-GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING = 5
+RESULT_SUCCESS = 1
+RESULT_FAILURE_UNSPECIFIED = 2
+RESULT_NO_EMAIL_HEADER_IN_REQUEST = 3
+RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NONE = 4
+RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING = 5
 
 # Remarks.
 REMARKS_UNDEFINED = ""
@@ -23,10 +23,16 @@ REMARKS_GIVEN_EMAIL_HEADER_KEY_IS_NONE = "The given email header key to search f
 REMARKS_GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING = "The given email header key to search for is not a string."
 REMARKS_UNABLE_TO_SET_DEFAULT_ON_FAILURE = "Unable to set default email on failure."
 
-def extract_email_from_headers(session_state, 
-                               header_key = EMAIL_HEADER, 
-                               session_state_key = SESSION_STATE_KEY, 
-                               set_email_on_failure = None): 
+# Output index.
+OUTPUT_INDEX_RESULT = 0
+OUTPUT_INDEX_REMARKS = 1
+OUTPUT_INDEX_EMAIL = 2
+
+
+def extract_email_from_headers(session_state=streamlit.session_state,
+                               header_key: str = EMAIL_HEADER,
+                               session_state_key: streamlit.Key = SESSION_STATE_KEY,
+                               set_email_on_failure: str = None):
 
     # Initialize the return values.
     email = EMAIL_UNDEFINED
@@ -36,75 +42,75 @@ def extract_email_from_headers(session_state,
     # Get the headers.
     headers = _get_websocket_headers()
 
-    # Validate the given header for email. 
-    if header_key is None: 
+    # Validate the given header for email.
+    if header_key is None:
 
-        # The given header key to look for is the null value "None". We cannot do anything about 
+        # The given header key to look for is the null value "None". We cannot do anything about
         # this.
-        result = GIVEN_EMAIL_HEADER_KEY_IS_NONE
+        result = RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NONE
         remarks = REMARKS_GIVEN_EMAIL_HEADER_KEY_IS_NONE
-    
+
     if not isinstance(header_key, str):
-    
-        # The given header key to search for is not a string. We cannot proceed. 
-        result = GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING
+
+        # The given header key to search for is not a string. We cannot proceed.
+        result = RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING
         remarks = REMARKS_GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING
 
-    # Check if we have already failed at this step. 
-    if result not in {GIVEN_EMAIL_HEADER_KEY_IS_NONE, GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING}:
-        
+    # Check if we have already failed at this step.
+    if result not in {RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NONE, RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING}:
+
         # Check if there is a header for the email.
         if header_key in headers:
-            
+
             # Get the value of the email matching the key.
             email = headers.get(header_key)
 
-            # Set the email in the given session state. 
+            # Set the email in the given session state.
             session_state[session_state_key] = email
 
             # Set the return values.
-            result = SUCCESS
+            result = RESULT_SUCCESS
             remarks = REMARKS_SUCCESS
 
         else:
 
-            # There is no header for the email. 
-                
+            # There is no header for the email.
+
             # Set the return values.
-            result = NO_EMAIL_HEADER_IN_REQUEST
+            result = RESULT_NO_EMAIL_HEADER_IN_REQUEST
             remarks = REMARKS_NO_EMAIL_HEADER_IN_REQUEST
             email = EMAIL_UNDEFINED
 
-    # Additional process if the result is not a success. 
-    if result in {RESULT_UNDEFINED, 
-                  FAILURE_UNSPECIFIED, 
-                  NO_EMAIL_HEADER_IN_REQUEST, 
-                  GIVEN_EMAIL_HEADER_KEY_IS_NONE, 
-                  GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING}:
+    # Additional process if the result is not a success.
+    if result in {RESULT_UNDEFINED,
+                  RESULT_FAILURE_UNSPECIFIED,
+                  RESULT_NO_EMAIL_HEADER_IN_REQUEST,
+                  RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NONE,
+                  RESULT_GIVEN_EMAIL_HEADER_KEY_IS_NOT_STRING}:
 
-        # Result is not a success. 
+        # Result is not a success.
 
-        # We remove any existing value associated with the given key when this function 
-        # fails. 
+        # We remove any existing value associated with the given key when this function
+        # fails.
         #
-        # Note: 
-        # We use 
-        # 
-        # session_state.pop(key, None) 
+        # Note:
+        # We use
         #
-        # here instead of 
-        # 
+        # session_state.pop(key, None)
+        #
+        # here instead of
+        #
         # del session_state[key]
-        # 
-        # because it is more elegant. Using del will cause an error if the key does not exist. 
-        # pop() will remove and return the value if the key exists but we must remember to 
-        # specify the default value to return ("None" in this example), otherwise it will 
-        # throw an error. 
+        #
+        # because it is more elegant. Using del will cause an error if the key does not exist.
+        # pop() will remove and return the value if the key exists but we must remember to
+        # specify the default value to return ("None" in this example), otherwise it will
+        # throw an error.
         session_state.pop(session_state_key, None)
 
         # Check if we should set an email on failure.
         if set_email_on_failure is not None:
-            
+
             # Check if the given email to set is a string.
             if isinstance(set_email_on_failure, str):
 
@@ -112,9 +118,9 @@ def extract_email_from_headers(session_state,
                 email = set_email_on_failure
                 session_state[session_state_key] = email
 
-            else: 
-                
-                # The given email is not a string. We do not set that. 
+            else:
+
+                # The given email is not a string. We do not set that.
                 remarks = remarks + " " + REMARKS_UNABLE_TO_SET_DEFAULT_ON_FAILURE
 
     # Return the result.
