@@ -33,23 +33,24 @@ def streamlit_helper_email_input(session_state=streamlit.session_state,
                                  label: str = EMPTY_STRING,
                                  value: str = EMPTY_STRING,
                                  max_chars: int | None = None,
-                                 session_state_key: streamlit.Key = None,
-                                 session_state_key_function_output: str = None,
-                                 type: streamlit.Literal['default',
-                                                         'password'] = "default",
+                                 session_state_key: str | int | None = None,
+                                 session_state_key_function_output: str | None = None,
+                                 type: typing.Literal['default',
+                                                      'password'] = "default",
                                  help: str | None = None,
                                  autocomplete: str | None = None,
-                                 on_change: streamlit.WidgetCallback | None = None,
-                                 args: streamlit.WidgetArgs | None = None,
-                                 kwargs: streamlit.WidgetKwargs | None = None,
+                                 on_change=None,
+                                 args=None,
+                                 kwargs=None,
                                  *,
                                  placeholder: str | None = None,
                                  disabled: bool = False,
-                                 label_visibility: streamlit.LabelVisibility = "visible",
+                                 label_visibility: typing.Literal["visible",
+                                                                  "hidden", "collapsed"] = "visible",
                                  header_key: str = extract_email_from_headers.EMAIL_HEADER,
-                                 set_email_on_failure: str = None,
+                                 set_email_on_failure: str | None = None,
                                  should_validate_email: bool = True,
-                                 email_ends_with: str = None) -> str | None:
+                                 email_ends_with: str | None = None) -> str | None:
     """A wrapper function that enhances the Streamlit.text_input function. 
 
     Optional functions invoked inside this wrapper function is 
@@ -168,11 +169,15 @@ def streamlit_helper_email_input(session_state=streamlit.session_state,
         # There is no entry for the email. We will try to extract it from the http header.
 
         # Extract the email from the header.
-        results_extract_email_from_headers = extract_email_from_headers(
-            session_state, header_key=header_key, session_state_key=session_state_key, set_email_on_failure=set_email_on_failure)
+        # 
+        # Note: 
+        # We set the session_state_key to \"None\" because we do not want the extraction code 
+        # to interfere with the session_state key used for the streamlit widget. 
+        results_extract_email_from_headers = extract_email_from_headers.extract_email_from_headers(
+            session_state, header_key=header_key, session_state_key=None, set_email_on_failure=set_email_on_failure)
 
         # Check the result of the email extraction.
-        if results_extract_email_from_headers[extract_email_from_headers.OUTPUT_INDEX_RESULT] is extract_email_from_headers.EXTRACT_SUCCESS:
+        if results_extract_email_from_headers[extract_email_from_headers.OUTPUT_INDEX_RESULT] is extract_email_from_headers.RESULT_SUCCESS:
 
             # Use the extracted email. We will do any validation or checks
             # further down.
@@ -237,7 +242,7 @@ def streamlit_helper_email_input(session_state=streamlit.session_state,
                                           disabled=disabled,
                                           label_visibility=label_visibility)
 
-    # Assign the text_input as the email.       
+    # Assign the text_input as the email.
     email = text_input
 
     # We will do validation checks if necessary. We do this here because this is
@@ -254,7 +259,7 @@ def streamlit_helper_email_input(session_state=streamlit.session_state,
             # Validation is successful.
             result = RESULT_SUCCESS
             remarks = REMARKS_SUCCESS
-            
+
         elif result_validate_email[validate_email.OUTPUT_INDEX_RESULT] is validate_email.REMARKS_FAILED_VALIDATION:
 
             # Validation is not successful.
@@ -265,8 +270,10 @@ def streamlit_helper_email_input(session_state=streamlit.session_state,
 
             # Validation is not successful.
             result = RESULT_FAIL_VALIDATION_INPUT_DOES_NOT_END_WITH_SPECIFIC_VALUE
-            remarks = REMARKS_FAIL_VALIDATION_INPUT_DOES_NOT_END_WITH_SPECIFIC_VALUE + str(" input [") + str(email) + str("], specified value [") + str(email_ends_with) + str("]")
-            
+            remarks = REMARKS_FAIL_VALIDATION_INPUT_DOES_NOT_END_WITH_SPECIFIC_VALUE + \
+                str(" input [") + str(email) + str("], specified value [") + \
+                str(email_ends_with) + str("]")
+
         else:
 
             # Generic failure.

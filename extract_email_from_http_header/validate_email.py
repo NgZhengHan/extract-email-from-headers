@@ -24,9 +24,6 @@ OUTPUT_INDEX_REMARKS = 1
 
 # Check if the email is valid. 
 def validate_email(email : str, ends_with : str = None):
-    """
-    
-    """
 
     # Initialize the return values.
     result = RESULT_UNDEFINED

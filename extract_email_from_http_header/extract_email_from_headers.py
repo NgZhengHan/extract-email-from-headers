@@ -31,8 +31,30 @@ OUTPUT_INDEX_EMAIL = 2
 
 def extract_email_from_headers(session_state=streamlit.session_state,
                                header_key: str = EMAIL_HEADER,
-                               session_state_key: streamlit.Key = SESSION_STATE_KEY,
+                               session_state_key: str | int | None = None,
                                set_email_on_failure: str = None):
+    """Extract the email from the http header.
+
+    Parameters
+    ----------
+    Args:
+        session_state (SessionStateProxy, optional): 
+            Streamlit's session_state. Defaults to streamlit.session_state.
+        header_key (str, optional): 
+            The key in the http header that is associated with the email. Defaults to \"X-Email\".
+        session_state_key (str | int | None, optional): 
+            The session_state key to use to store the extacted email. 
+            If no email is found in the http header, and if there is an email to set on failure, then this session_state key 
+            will be associated with the specified email to set on failure. If \"None\" is supplied, then the email (if any) will 
+            not be stored in the session_state. We can still use the returned results to get the email (if any). Defaults to None.
+        set_email_on_failure (str, optional): 
+            The email to use in the event when we fail to extract an email from the http header. Defaults to None.
+
+    Returns
+    -------
+    Returns:
+        Tuple: A Tuple containing the result code, the remarks, and the email.
+    """
 
     # Initialize the return values.
     email = EMAIL_UNDEFINED
@@ -66,7 +88,8 @@ def extract_email_from_headers(session_state=streamlit.session_state,
             email = headers.get(header_key)
 
             # Set the email in the given session state.
-            session_state[session_state_key] = email
+            if session_state is not None:
+                session_state[session_state_key] = email
 
             # Set the return values.
             result = RESULT_SUCCESS
@@ -116,7 +139,8 @@ def extract_email_from_headers(session_state=streamlit.session_state,
 
                 # The given email is a string. We can set that.
                 email = set_email_on_failure
-                session_state[session_state_key] = email
+                if session_state_key is not None:
+                    session_state[session_state_key] = email
 
             else:
 
