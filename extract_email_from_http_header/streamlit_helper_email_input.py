@@ -271,7 +271,7 @@ def streamlit_helper_email_input(session_state=streamlit.session_state,
             # Validation is not successful.
             result = RESULT_FAIL_VALIDATION_INPUT_DOES_NOT_END_WITH_SPECIFIC_VALUE
             remarks = REMARKS_FAIL_VALIDATION_INPUT_DOES_NOT_END_WITH_SPECIFIC_VALUE + \
-                str(" input [") + str(email) + str("], specified value [") + \
+                str(" Input [") + str(email) + str("], specified value for email to end with [") + \
                 str(email_ends_with) + str("]")
 
         else:
